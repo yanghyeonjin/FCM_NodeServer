@@ -1,11 +1,36 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+
+<head>
+  <title><%= title %></title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <h1><%= title %></h1>
+  <p>Welcome to <%= title %></p>
+  <button type="button" class="btn-send-one">특정 기기 1개에 메시지 전송</button>
+
+  <!-- jquery -->
+  <script src="/javascripts/jquery-3.4.1.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      // one 
+      $('.btn-send-one').on('click', function () {
+        $.ajax({
+          type: "POST",
+          url: "/ajax/sendNotificationOne",
+          dataType: "JSON",
+          success: function (response) {
+            console.log(response)
+          },
+          error: function (err) {
+            console.log(err);
+          }
+        })
+      })
+    })
+  </script>
+</body>
+
 </html>
