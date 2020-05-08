@@ -19,6 +19,16 @@ router.get('/', function (req, res, next) {
 router.post("/ajax/sendNotificationOne", function (req, res, next) {
   const destination = req.body.destination; // 푸시알림 클릭 시 목적지
 
+  // 목적지 액티비티 (백그라운드에서 작동하기 위해)
+  let destActivity = "";
+  if (destination == "page1") {
+    destActivity = "PAGE_1_ACTIVITY"
+  } else if (destination == "page2") {
+    destActivity = "PAGE_2_ACTIVITY"
+  } else if (destination == "page3") {
+    destActivity = "PAGE_3_ACTIVITY"
+  }
+
   // DB에 저장된 토큰 가져오기
   let sql = `
   SELECT token
@@ -42,7 +52,8 @@ router.post("/ajax/sendNotificationOne", function (req, res, next) {
         token: registrationToken,
         android: {
           notification: {
-            sound: "default"
+            sound: "default",
+            click_action: destActivity // 백그라운드에서 작동하기 위해
           }
         }
       }
