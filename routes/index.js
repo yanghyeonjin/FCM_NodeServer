@@ -38,7 +38,12 @@ router.post("/ajax/sendNotificationOne", function (req, res, next) {
           score: '850',
           time: '2:45'
         },
-        token: registrationToken
+        token: registrationToken,
+        android: {
+          notification: {
+            sound: "default"
+          }
+        }
       }
 
       // Send a message to the device corresponding to the provided
