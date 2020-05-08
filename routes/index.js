@@ -17,6 +17,8 @@ router.get('/', function (req, res, next) {
 
 /* 단일 기기 PUSH 전송*/
 router.post("/ajax/sendNotificationOne", function (req, res, next) {
+  const destination = req.body.destination; // 푸시알림 클릭 시 목적지
+
   // DB에 저장된 토큰 가져오기
   let sql = `
   SELECT token
@@ -31,12 +33,11 @@ router.post("/ajax/sendNotificationOne", function (req, res, next) {
 
       const message = {
         notification: {
-          title: "Test",
-          body: "Test Push!"
+          title: "FCM Notification Example",
+          body: `GO TO ${destination}`
         },
         data: {
-          score: '850',
-          time: '2:45'
+          destination: destination
         },
         token: registrationToken,
         android: {
