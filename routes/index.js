@@ -3,6 +3,7 @@ var router = express.Router();
 
 const firebaseAdmin = require('firebase-admin');
 const serviceAccount = require("../config/firebase-adminsdk.json");
+const db = require('../lib/db');
 
 /* Firebase Admin SDK 초기화 */
 firebaseAdmin.initializeApp({
@@ -16,31 +17,42 @@ router.get('/', function (req, res, next) {
 
 /* 단일 기기 PUSH 전송*/
 router.post("/ajax/sendNotificationOne", function (req, res, next) {
-  // This registration token comes from the client FCM SDKs.
-  const registrationToken = "";
+  // DB에 저장된 토큰 가져오기
+  let sql = `
+  SELECT token
+  FROM device
+  `;
 
-  const message = {
-    notification: {
-      title: "Test",
-      body: "Test Push!"
-    },
-    data: {
-      score: '850',
-      time: '2:45'
-    },
-    token: registrationToken
-  }
+  db.query(sql, function (err, rows) {
+    if (err) throw err;
+    if (rows.length > 0) {
+      // This registration token comes from the client FCM SDKs.
+      let registrationToken = rows[0].token;
 
-  // Send a message to the device corresponding to the provided
-  // registration token.
-  firebaseAdmin.messaging().send(message)
-    .then((response) => {
-      // Response is a message ID string.
-      res.json(response);
-    })
-    .catch((error) => {
-      console.log('Error sending message:', error)
-    })
+      const message = {
+        notification: {
+          title: "Test",
+          body: "Test Push!"
+        },
+        data: {
+          score: '850',
+          time: '2:45'
+        },
+        token: registrationToken
+      }
+
+      // Send a message to the device corresponding to the provided
+      // registration token.
+      firebaseAdmin.messaging().send(message)
+        .then((response) => {
+          // Response is a message ID string.
+          res.json(response);
+        })
+        .catch((error) => {
+          console.log('Error sending message:', error)
+        })
+    }
+  })
 })
 
 module.exports = router;
